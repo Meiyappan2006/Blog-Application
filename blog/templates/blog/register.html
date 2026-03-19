@@ -1,0 +1,43 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="min-h-[70vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8" data-aos="fade-up">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <h2 class="mt-6 text-4xl font-display font-black text-gray-900 tracking-tight">Join SuperBlog</h2>
+        <p class="mt-2 text-sm text-gray-600 font-medium">
+            Already have an account? 
+            <a href="{% url 'blog:login' %}" class="font-bold text-gray-900 hover:text-gray-500 transition-colors border-b border-gray-900 hover:border-gray-500 pb-0.5">Sign in</a>
+        </p>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 sm:px-10 border border-gray-200 shadow-sm rounded-2xl">
+            
+            {% include 'blog/includes/errors.html' %}
+                
+            <form class="space-y-6" method="POST">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-bold text-gray-900 tracking-wide mb-1.5">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="mt-1.5 text-xs font-bold text-red-600">{{ field.errors.0 }}</p>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <p class="mt-1.5 text-xs text-gray-500 font-medium">{{ field.help_text }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

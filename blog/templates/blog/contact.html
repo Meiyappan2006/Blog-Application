@@ -1,0 +1,142 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-12 lg:py-20" data-aos="fade-up">
+
+    <!-- Header -->
+    <div class="mb-16 md:mb-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-display font-black tracking-tight text-gray-900 mb-6">Get in touch.</h1>
+        <p class="text-xl text-gray-500 font-serif-content">We'd love to hear from you. Drop us a line below.</p>
+    </div>
+
+    <!-- Contact Container -->
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8 md:p-12 mb-20">
+        
+        <div id="form-messages" class="hidden mb-8 p-4 rounded-xl font-bold"></div>
+
+        <form id="contact-form" method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label for="name" class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Full Name</label>
+                    <input type="text" id="name" name="name" required class="bg-gray-50">
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Email Address</label>
+                    <input type="email" id="email" name="email" required class="bg-gray-50">
+                </div>
+            </div>
+
+            <div>
+                <label for="subject" class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Subject</label>
+                <select id="subject" name="subject" required class="bg-gray-50 appearance-none text-gray-900 font-medium">
+                    <option value="" disabled selected>How can we help?</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="support">Technical Support</option>
+                    <option value="feedback">Product Feedback</option>
+                    <option value="press">Press & Media</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="message" class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Message</label>
+                <textarea id="message" name="message" rows="6" required class="bg-gray-50 resize-y"></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                <button type="submit" id="submit-btn" class="bg-gray-900 hover:bg-black text-white px-10 py-3.5 rounded-full font-bold shadow-sm transition-all flex items-center h-12">
+                    <span id="btn-text">Send Message</span>
+                    <svg id="btn-icon" class="w-4 h-4 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FAQ Section -->
+    <div>
+        <h2 class="text-3xl font-display font-black text-gray-900 mb-10 text-center">Frequently Asked Questions</h2>
+        
+        <div class="space-y-4 max-w-2xl mx-auto">
+            <!-- FAQ 1 -->
+            <div class="border border-gray-200 rounded-2xl bg-white overflow-hidden FAQ-item shadow-sm">
+                <button class="flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-gray-900">How do I verify my account?</span>
+                    <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="px-6 pb-5 hidden text-gray-600 font-serif-content">
+                    Your account is automatically active upon registration. You can start reading and writing immediately!
+                </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="border border-gray-200 rounded-2xl bg-white overflow-hidden FAQ-item shadow-sm">
+                <button class="flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-gray-900">Who can write articles on SuperBlog?</span>
+                    <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="px-6 pb-5 hidden text-gray-600 font-serif-content">
+                    Absolutely anyone! Once you create an account, you automatically become an Author and can draft, edit, and publish your own stories.
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="border border-gray-200 rounded-2xl bg-white overflow-hidden FAQ-item shadow-sm">
+                <button class="flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-gray-900">How do I change my password?</span>
+                    <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="px-6 pb-5 hidden text-gray-600 font-serif-content">
+                    If you're logged out, click "Forgot password?" on the login page. We'll send an email directly to your inbox with a secure reset link.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleFaq(button) {
+        const content = button.nextElementSibling;
+        const icon = button.querySelector('svg');
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+    }
+
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnIcon = document.getElementById('btn-icon');
+        const messages = document.getElementById('form-messages');
+        
+        btnText.textContent = 'Sending...';
+        btn.disabled = true;
+        btn.classList.add('opacity-75');
+        
+        setTimeout(() => {
+            this.reset();
+            
+            btnText.textContent = 'Sent Successfully';
+            btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+            btn.classList.replace('bg-gray-900', 'bg-green-600');
+            btn.classList.replace('hover:bg-black', 'hover:bg-green-700');
+            
+            messages.textContent = "Thanks for reaching out! We'll get back to you shortly.";
+            messages.className = "mb-8 p-4 rounded-xl font-bold bg-green-50 text-green-700 block transition-all";
+            
+            setTimeout(() => {
+                btnText.textContent = 'Send Message';
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>';
+                btn.disabled = false;
+                btn.classList.remove('opacity-75');
+                btn.classList.replace('bg-green-600', 'bg-gray-900');
+                btn.classList.replace('hover:bg-green-700', 'hover:bg-black');
+            }, 3000);
+            
+        }, 1500);
+    });
+</script>
+{% endblock %}

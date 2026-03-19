@@ -1,0 +1,147 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="min-h-screen bg-[#0a0a0a] text-gray-300 -mx-4 -mt-8 sm:-mx-6 sm:-mt-8 lg:-mx-8 p-4 sm:p-8 font-mono absolute inset-0 z-40 overflow-auto border-t-4 border-emerald-500 pt-16">
+    
+    <div class="max-w-7xl mx-auto pt-8">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 border-b border-gray-800 pb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-white uppercase tracking-widest flex items-center gap-3 font-display">
+                    <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.7)]"></span>
+                    Terminal_Command
+                </h1>
+                <p class="text-gray-500 text-sm mt-2">SYSTEM STATUS: <span class="text-emerald-500 font-bold">ONLINE</span> &bull; SUPERUSER DETECTED</p>
+            </div>
+            <a href="{% url 'blog:index' %}" class="px-5 py-2.5 border border-gray-700 hover:border-emerald-500 hover:bg-emerald-500/10 text-gray-400 hover:text-emerald-500 rounded font-bold uppercase tracking-widest text-[10px] transition-all">Terminate Session X</a>
+        </div>
+
+        {% include 'blog/includes/errors.html' %}
+        {% if messages %}
+            <div class="mb-10">
+                {% for message in messages %}
+                    <div class="p-4 rounded border font-bold {% if message.tags == 'error' %}bg-red-900/30 border-red-500 text-red-400{% else %}bg-emerald-900/30 border-emerald-500 text-emerald-400{% endif %} text-xs uppercase tracking-widest">
+                        >> {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Telemetry Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="bg-[#111111] border border-gray-800 p-6 rounded relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/20 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 z-10 relative">Total Entities</p>
+                <p class="text-5xl font-display font-black text-white hover:text-emerald-400 transition-colors">{{total_users}}</p>
+            </div>
+            <div class="bg-[#111111] border border-gray-800 p-6 rounded relative overflow-hidden group hover:border-blue-500/50 transition-colors">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/20 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 z-10 relative">Global Fragments</p>
+                <p class="text-5xl font-display font-black text-white hover:text-blue-400 transition-colors">{{total_posts}}</p>
+            </div>
+            <div class="bg-[#111111] border border-gray-800 p-6 rounded relative overflow-hidden group hover:border-purple-500/50 transition-colors">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-500/20 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 z-10 relative">Chatter Logs</p>
+                <p class="text-5xl font-display font-black text-white hover:text-purple-400 transition-colors">{{total_comments}}</p>
+            </div>
+            <div class="bg-[#111111] border border-gray-800 p-6 rounded relative overflow-hidden group hover:border-amber-500/50 transition-colors">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/20 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 z-10 relative">Secured Archives</p>
+                <p class="text-5xl font-display font-black text-white hover:text-amber-400 transition-colors">{{total_saves}}</p>
+            </div>
+        </div>
+
+        <!-- Data Grids -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            
+            <!-- Users Table -->
+            <div class="bg-[#0f0f0f] border border-gray-800 rounded-xl flex flex-col h-[500px] shadow-2xl overflow-hidden">
+                <div class="p-5 border-b border-gray-800 flex justify-between items-center bg-[#151515]">
+                    <h2 class="text-xs font-bold text-gray-300 uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Entity Roster</h2>
+                    <span class="text-[10px] text-emerald-500 border border-emerald-500/30 px-2 py-0.5 rounded uppercase font-bold tracking-widest">{{total_users}} LIVE</span>
+                </div>
+                <div class="overflow-y-auto flex-grow">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead class="text-[10px] text-gray-500 text-center uppercase font-bold sticky top-0 bg-[#0f0f0f] shadow-sm z-10 border-b border-gray-800">
+                            <tr>
+                                <th class="px-4 py-3">UUID/Name</th>
+                                <th class="px-4 py-3">Email</th>
+                                <th class="px-4 py-3 whitespace-nowrap">Join Date</th>
+                                <th class="px-4 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center font-medium">
+                            {% for u in users %}
+                            <tr class="hover:bg-gray-800/30 border-b border-gray-800/30 transition-colors group">
+                                <td class="px-4 py-3 text-gray-300">{{u.username}}</td>
+                                <td class="px-4 py-3 truncate max-w-[120px]" title="{{u.email}}">{{u.email|default:"-N/A-"}}</td>
+                                <td class="px-4 py-3 text-xs text-gray-500 font-mono">{{u.date_joined|date:"Y-m-d"}}</td>
+                                <td class="px-4 py-3">
+                                    {% if u != user %}
+                                    <form action="{% url 'blog:admin_delete_user' user_id=u.id %}" method="POST" onsubmit="return confirm('ERADICATE ENTITY? THIS CANNOT BE UNDONE.');">
+                                        {% csrf_token %}
+                                        <button class="text-rose-500 hover:text-white hover:bg-rose-600 px-3 py-1.5 rounded border border-rose-900/50 hover:border-rose-600 text-[10px] bg-rose-500/10 font-bold uppercase tracking-widest transition-all">PURGE</button>
+                                    </form>
+                                    {% else %}
+                                    <span class="text-[10px] max-w-min mx-auto bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded text-emerald-500 font-bold uppercase tracking-widest">ROOT</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="px-4 py-8 text-center text-gray-600">NO ENTITIES FOUND</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Posts Table -->
+            <div class="bg-[#0f0f0f] border border-gray-800 rounded-xl flex flex-col h-[500px] shadow-2xl overflow-hidden">
+                <div class="p-5 border-b border-gray-800 flex justify-between items-center bg-[#151515]">
+                    <h2 class="text-xs font-bold text-gray-300 uppercase tracking-widest flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> Data Fragment Logs</h2>
+                    <span class="text-[10px] text-blue-500 border border-blue-500/30 px-2 py-0.5 rounded uppercase font-bold tracking-widest">{{total_posts}} INDEXED</span>
+                </div>
+                <div class="overflow-y-auto flex-grow">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead class="text-[10px] text-gray-500 text-center uppercase font-bold sticky top-0 bg-[#0f0f0f] shadow-sm z-10 border-b border-gray-800">
+                            <tr>
+                                <th class="px-4 py-3">Title Payload</th>
+                                <th class="px-4 py-3">Author ID</th>
+                                <th class="px-4 py-3">Trace (Date/Metric)</th>
+                                <th class="px-4 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center font-medium">
+                            {% for p in posts %}
+                            <tr class="hover:bg-gray-800/30 border-b border-gray-800/30 transition-colors group">
+                                <td class="px-4 py-3 text-gray-300 truncate max-w-[120px] text-left">
+                                    <a href="{% url 'blog:detail' slug=p.slug %}" target="_blank" class="hover:text-emerald-400 border-b border-transparent hover:border-emerald-400 transition-all">{{p.title}}</a>
+                                </td>
+                                <td class="px-4 py-3">{{p.user.username}}</td>
+                                <td class="px-4 py-3 text-xs text-gray-500 font-mono">
+                                    {{p.created_at|date:"Y-m-d"}}
+                                    <div class="text-[9px] text-gray-600 mt-0.5 tracking-wider">L:{{p.likes.count}} C:{{p.comments.count}}</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <form action="{% url 'blog:admin_delete_post' post_id=p.id %}" method="POST" onsubmit="return confirm('DESTROY FRAGMENT? OVERWRITE IS PERMANENT.');">
+                                        {% csrf_token %}
+                                        <button class="text-rose-500 hover:text-white hover:bg-rose-600 px-3 py-1.5 rounded border border-rose-900/50 hover:border-rose-600 text-[10px] bg-rose-500/10 font-bold uppercase tracking-widest transition-all">NUKE</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="px-4 py-8 text-center text-gray-600">NO FRAGMENTS FOUND</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Forcing absolute dark mode for this page */
+    body { background-color: #0a0a0a !important; }
+</style>
+{% endblock %}

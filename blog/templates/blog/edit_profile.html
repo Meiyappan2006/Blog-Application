@@ -1,0 +1,192 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 md:py-24 px-4" data-aos="fade-in">
+    
+    <div class="mb-16 border-b border-gray-200 pb-8">
+        <h1 class="text-4xl md:text-5xl font-display font-black text-gray-900 tracking-tight mb-2">Profile Settings</h1>
+        <p class="text-gray-500 font-serif-content text-lg">Manage your personal information, stories, and reading list.</p>
+    </div>
+
+    {% include 'blog/includes/errors.html' %}
+    {% if messages %}
+        <div class="mb-8">
+            {% for message in messages %}
+                <div class="p-4 rounded-xl {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %} text-sm font-bold">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- PROFILE SETTINGS FORM -->
+    <div class="mb-24">
+        <h2 class="text-2xl font-display font-bold text-gray-900 mb-8">Personal Information</h2>
+        <form method="POST" enctype="multipart/form-data" class="space-y-8 bg-white p-8 border border-gray-200 rounded-2xl shadow-sm">
+            {% csrf_token %}
+            
+            <!-- Avatar Upload -->
+            <div class="flex items-center gap-6">
+                <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                    {% if user.profile.formatted_profile_pic %}
+                        <img src="{{user.profile.formatted_profile_pic}}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gray-900 text-white font-bold text-2xl uppercase">{{user.username|make_list|first}}</div>
+                    {% endif %}
+                </div>
+                <div class="flex-grow">
+                    <label class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Profile Picture</label>
+                    {{ p_form.profile_pic }}
+                    {% if p_form.profile_pic.errors %}<p class="text-red-500 text-xs mt-1">{{p_form.profile_pic.errors.0}}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">First Name</label>
+                    {{ u_form.first_name }}
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Last Name</label>
+                    {{ u_form.last_name }}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-900 tracking-wide mb-2 uppercase">Biography</label>
+                {{ p_form.bio }}
+                <p class="text-xs text-gray-500 mt-2 font-medium">Brief description for your profile. max 500 characters.</p>
+            </div>
+
+            <!-- Privacy Toggle -->
+            <div class="pt-4 border-t border-gray-100">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl ">
+                    <div>
+                        <p class="font-bold text-gray-900 text-sm">Private Account</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Only approved followers can see your posts</p>
+                    </div>
+                    <label for="{{ p_form.is_private.id_for_label }}" class="relative inline-flex items-center cursor-pointer">
+                        {{ p_form.is_private }}
+                        <div class="w-11 h-6 bg-gray-200 peer-checked:bg-gray-900 rounded-full peer peer-focus:ring-2 peer-focus:ring-gray-400 transition-all after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                <button type="submit" class="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-bold shadow-sm transition-all text-sm">Save Profile</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FOLLOW REQUESTS -->
+    {% if request.user.profile.follow_requests.all %}
+    <div class="mb-16 border border-amber-200 bg-amber-50 rounded-2xl p-6">
+        <h2 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+            Follow Requests
+            <span class="ml-1 text-xs bg-amber-400 text-white px-2 py-0.5 rounded-full">{{ request.user.profile.follow_requests.count }}</span>
+        </h2>
+        <div class="space-y-3">
+            {% for req_user in request.user.profile.follow_requests.all %}
+            <div class="flex items-center gap-4 bg-white rounded-xl p-3 border border-amber-100">
+                <img src="{{ req_user.profile.formatted_profile_pic }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="{{ req_user.username }}">
+                <div class="flex-1 min-w-0">
+                    <a href="{% url 'blog:profile' req_user.username %}" class="font-bold text-gray-900 hover:text-emerald-600 transition-colors text-sm">@{{ req_user.username }}</a>
+                    <p class="text-xs text-gray-400">{{ req_user.profile.followers.count }} followers</p>
+                </div>
+                <div class="flex gap-2 flex-shrink-0">
+                    <a href="{% url 'blog:accept_follow' req_user.username %}" class="px-4 py-1.5 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-full transition-colors">Accept</a>
+                    <a href="{% url 'blog:decline_follow' req_user.username %}" class="px-4 py-1.5 bg-white hover:bg-gray-100 text-gray-700 text-xs font-bold rounded-full border border-gray-200 transition-colors">Decline</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- SAVED STORIES -->
+    <div class="mb-24">
+        <h2 class="text-2xl font-display font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">Saved Stories</h2>
+        {% if saved_posts %}
+            <div class="space-y-6">
+                {% for post in saved_posts %}
+                    <div class="flex gap-6 group items-center bg-white p-4 border border-gray-100 rounded-2xl shadow-sm hover:border-gray-200 transition-colors">
+                        <a href="{% url 'blog:detail' slug=post.slug %}" class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 block">
+                            {% if post.img_url %}
+                                <img src="{{post.formatted_img_url}}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            {% endif %}
+                        </a>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-display font-bold text-gray-900 group-hover:text-gray-600 transition-colors mb-1 line-clamp-1">
+                                <a href="{% url 'blog:detail' slug=post.slug %}">{{post.title}}</a>
+                            </h3>
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">{{post.user.username}} &bull; {{post.created_at|date:"M d, Y"}}</p>
+                        </div>
+                        <div class="flex-shrink-0 pr-2">
+                            <a href="{% url 'blog:toggle_save' post_id=post.id %}" class="text-sm font-bold text-rose-500 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-full transition-colors hidden sm:block">Unsave</a>
+                            <a href="{% url 'blog:toggle_save' post_id=post.id %}" class="text-sm font-bold text-rose-500 hover:text-rose-600 p-2 bg-rose-50 hover:bg-rose-100 rounded-full transition-colors sm:hidden block">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="py-12 text-center bg-gray-50 rounded-2xl border border-gray-200">
+                <p class="text-gray-500 font-serif-content">You haven't saved any stories yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- MY STORIES -->
+    <div>
+        <div class="flex items-center gap-4 mb-8 border-b border-gray-200 pb-4">
+            <h2 class="text-2xl font-display font-bold text-gray-900">Your Stories</h2>
+            <a href="{% url 'blog:new_post' %}" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors ml-auto bg-blue-50 px-4 py-1.5 rounded-full">Write New</a>
+        </div>
+
+        {% if my_posts %}
+            <div class="space-y-6">
+                {% for post in my_posts %}
+                    <div class="flex gap-6 group items-center bg-white p-4 border border-gray-100 rounded-2xl shadow-sm hover:border-gray-200 transition-colors">
+                        <a href="{% url 'blog:detail' slug=post.slug %}" class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 block">
+                            {% if post.img_url %}
+                                <img src="{{post.formatted_img_url}}" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            {% endif %}
+                        </a>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-display font-bold text-gray-900 group-hover:text-gray-600 transition-colors mb-1 line-clamp-1">
+                                <a href="{% url 'blog:detail' slug=post.slug %}">{{post.title}}</a>
+                            </h3>
+                            <div class="flex items-center gap-3 mt-1">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">{{post.category.name}}</span>
+                                <span class="text-gray-300">&bull;</span>
+                                <span class="text-xs font-bold uppercase tracking-widest {% if post.is_published %}text-green-600{% else %}text-orange-500{% endif %}">{{post.is_published|yesno:"Published,Draft"}}</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 pr-2">
+                            <a href="{% url 'blog:edit_post' post_id=post.id %}" class="text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors hidden sm:block">Edit</a>
+                            <a href="{% url 'blog:edit_post' post_id=post.id %}" class="text-sm font-bold text-gray-700 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors block sm:hidden">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="py-12 text-center bg-gray-50 rounded-2xl border border-gray-200">
+                <p class="text-gray-500 font-serif-content mb-4">You haven't written any stories yet.</p>
+                <a href="{% url 'blog:new_post' %}" class="text-sm font-bold text-gray-900 border-b border-gray-900 hover:text-gray-600 hover:border-gray-600 transition-colors pb-0.5">Start Writing</a>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

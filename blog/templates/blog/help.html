@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 lg:py-24" data-aos="fade-up">
+    <h1 class="text-5xl md:text-7xl font-display font-medium text-black leading-tight mb-8">
+        Help Center
+    </h1>
+    
+    <div class="font-serif-content text-xl md:text-2xl text-gray-800 leading-relaxed space-y-8">
+        <p>
+            Welcome to the SuperBlog Help Center. Whether you're here to share a story, connect with an audience, or just discover new ideas, we're committed to making your experience seamless.
+        </p>
+        <p>
+            If you encounter any issues with your account, writing tools, or content delivery, please don't hesitate to reach out. We believe a strong community relies on open communication.
+        </p>
+        
+        <div class="pt-8">
+            <a href="{% url 'blog:contact' %}" class="btn-black px-8 py-3 text-lg font-sans font-medium hover:bg-gray-800 transition">Contact Support</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

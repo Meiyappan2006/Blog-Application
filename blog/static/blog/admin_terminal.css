@@ -1,0 +1,206 @@
+/* Heavy Cyberpunk Theme for Jazzmin */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+body {
+    font-family: 'Share Tech Mono', monospace !important;
+    background-color: #050505 !important;
+    background-image: 
+        linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px) !important;
+    background-size: 20px 20px !important;
+    color: #10b981 !important;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5) !important;
+}
+
+.wrapper, .content-wrapper, .main-footer {
+    background: transparent !important;
+}
+
+.main-header {
+    background-color: rgba(5, 5, 5, 0.9) !important;
+    border-bottom: 2px solid #10b981 !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.main-sidebar {
+    background-color: rgba(5, 5, 5, 0.95) !important;
+    border-right: 2px solid #10b981 !important;
+    box-shadow: inset -5px 0 15px rgba(16, 185, 129, 0.1) !important;
+}
+
+.brand-link, .nav-link, .nav-header {
+    color: #10b981 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.8) !important;
+}
+
+.nav-sidebar .nav-item>.nav-link {
+    border-radius: 0 !important;
+    border-left: 3px solid transparent !important;
+}
+
+.nav-sidebar .nav-item>.nav-link:hover, .nav-sidebar .nav-item>.nav-link.active {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
+    border-left: 3px solid #10b981 !important;
+    box-shadow: inset 5px 0 10px rgba(16, 185, 129, 0.2) !important;
+}
+
+.brand-link {
+    border-bottom: 2px solid #10b981 !important;
+    background-color: #000 !important;
+}
+
+.card {
+    background-color: rgba(10, 10, 10, 0.85) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid #10b981 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.15), inset 0 0 20px rgba(16, 185, 129, 0.05) !important;
+}
+
+.card-header {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-bottom: 1px solid #10b981 !important;
+    color: #10b981 !important;
+    text-transform: uppercase !important;
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+}
+
+/* Buttons */
+.btn-primary, .btn-info, .btn-success, .btn-warning, .btn-danger, .btn-default, .btn-secondary {
+    background-color: rgba(5, 5, 5, 0.8) !important;
+    border: 1px solid #10b981 !important;
+    color: #10b981 !important;
+    border-radius: 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2) !important;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5) !important;
+}
+
+.btn-primary:hover, .btn-info:hover, .btn-success:hover, .btn-default:hover, .btn-secondary:hover {
+    background-color: #10b981 !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6) !important;
+    text-shadow: none !important;
+}
+
+.btn-danger {
+    border-color: #ef4444 !important;
+    color: #ef4444 !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2) !important;
+    text-shadow: 0 0 5px rgba(239, 68, 68, 0.5) !important;
+}
+
+.btn-danger:hover {
+    background-color: #ef4444 !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
+    text-shadow: none !important;
+}
+
+/* Tables */
+table {
+    color: #10b981 !important;
+}
+
+th {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #10b981 !important;
+    border-bottom: 2px solid #10b981 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+td {
+    border-top: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(16, 185, 129, 0.02) !important;
+}
+
+tr:hover {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Forms */
+.form-control, select, input {
+    background-color: rgba(5, 5, 5, 0.9) !important;
+    border: 1px solid #10b981 !important;
+    color: #10b981 !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.1) !important;
+}
+
+.form-control:focus, select:focus, input:focus {
+    border-color: #34d399 !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(16, 185, 129, 0.2) !important;
+    outline: none !important;
+}
+
+/* Login Page specific overrides */
+.login-page {
+    background-color: #050505 !important;
+    background-image: 
+        linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px) !important;
+    background-size: 30px 30px !important;
+}
+.login-box, .register-box {
+    width: 450px !important;
+}
+.login-card-body, .register-card-body {
+    background-color: rgba(5, 5, 5, 0.9) !important;
+    border: 2px solid #10b981 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.3), inset 0 0 20px rgba(16, 185, 129, 0.1) !important;
+    padding: 3rem !important;
+    backdrop-filter: blur(10px) !important;
+}
+.login-logo a {
+    color: #10b981 !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 6px !important;
+    text-shadow: 0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4) !important;
+}
+.login-logo a::before {
+    content: "> ";
+    animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.login-box-msg {
+    color: #10b981 !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Breadcrumbs & Layout */
+.breadcrumb-item a {
+    color: #10b981 !important;
+    text-decoration: none !important;
+}
+.breadcrumb-item.active {
+    color: #34d399 !important;
+    text-shadow: 0 0 5px rgba(52, 211, 153, 0.5) !important;
+}
+
+a {
+    color: #10b981 !important;
+    transition: all 0.2s;
+}
+a:hover {
+    color: #34d399 !important;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.8) !important;
+    text-decoration: none !important;
+}

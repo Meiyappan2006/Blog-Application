@@ -1,0 +1,290 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+  {% if query %}Search: "{{ query }}" — SuperBlog{% else %}Search — SuperBlog{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 pt-28 pb-16">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Hero Search Section -->
+    <div class="mb-10">
+      <h1 class="text-4xl font-black text-gray-900 mb-2 tracking-tight">
+        {% if query %}Results for <span class="text-emerald-600">"{{ query }}"</span>{% else %}Explore SuperBlog{% endif %}
+      </h1>
+      {% if query %}
+        <p class="text-gray-500 text-sm font-medium">{{ total_results }} result{{ total_results|pluralize }} found</p>
+      {% else %}
+        <p class="text-gray-500 text-sm font-medium">Search for posts, people, and topics</p>
+      {% endif %}
+
+      <!-- Search Form -->
+      <form method="GET" action="{% url 'blog:search' %}" class="mt-6 flex gap-3">
+        <div class="relative flex-1">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+          </svg>
+          <input
+            type="text"
+            name="q"
+            id="search-input"
+            value="{{ query }}"
+            placeholder="Search posts, people, topics..."
+            autofocus
+            class="w-full !pl-12 pr-5 py-4 rounded-2xl border border-gray-200 bg-white text-gray-900 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
+          />
+        </div>
+        <button type="submit" class="px-7 py-4 bg-gray-900 hover:bg-black text-white text-sm font-black uppercase tracking-wider rounded-2xl shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          Search
+        </button>
+      </form>
+    </div>
+
+    {% if query %}
+
+      <!-- Tab Filter -->
+      <div class="flex gap-2 mb-8 border-b border-gray-200 pb-0" id="search-tabs">
+        <button onclick="showTab('all')" id="tab-all"
+          class="tab-btn px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 border-gray-900 text-gray-900 transition-all">
+          All <span class="ml-1 text-xs bg-gray-900 text-white px-1.5 py-0.5 rounded-full">{{ total_results }}</span>
+        </button>
+        <button onclick="showTab('articles')" id="tab-articles"
+          class="tab-btn px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gray-700 transition-all">
+          Articles <span class="ml-1 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{{ posts.count }}</span>
+        </button>
+        <button onclick="showTab('people')" id="tab-people"
+          class="tab-btn px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gray-700 transition-all">
+          People <span class="ml-1 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{{ users.count }}</span>
+        </button>
+        <button onclick="showTab('topics')" id="tab-topics"
+          class="tab-btn px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 border-transparent text-gray-400 hover:text-gray-700 transition-all">
+          Topics <span class="ml-1 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">{{ categories.count }}</span>
+        </button>
+      </div>
+
+      <!-- NO RESULTS -->
+      {% if total_results == 0 and not categories %}
+      <div class="text-center py-24">
+        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+          <svg class="w-9 h-9 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-black text-gray-800 mb-2">No results found</h3>
+        <p class="text-gray-500 text-sm">Try a different keyword, or browse the feed</p>
+        <a href="{% url 'blog:index' %}" class="inline-block mt-5 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-full hover:bg-black transition-all">Browse Feed</a>
+      </div>
+      {% else %}
+
+      <!-- ─── ALL TAB ─── -->
+      <div id="section-all" class="search-section space-y-12">
+
+        <!-- People Section -->
+        {% if users %}
+        <div>
+          <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-5">People</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for u in users|slice:":6" %}
+            <a href="{% url 'blog:profile' u.username %}" class="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all group">
+              {% if u.profile.formatted_profile_pic %}
+                <img src="{{ u.profile.formatted_profile_pic }}" class="w-12 h-12 rounded-full object-cover flex-shrink-0" alt="{{ u.username }}">
+              {% else %}
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                  {{ u.username|make_list|first|upper }}
+                </div>
+              {% endif %}
+              <div class="min-w-0">
+                <p class="font-bold text-gray-900 text-sm truncate group-hover:text-emerald-600 transition-colors">@{{ u.username }}</p>
+                {% if u.profile.bio %}
+                  <p class="text-gray-400 text-xs truncate mt-0.5">{{ u.profile.bio|truncatechars:40 }}</p>
+                {% else %}
+                  <p class="text-gray-400 text-xs">{{ u.profile.followers.count }} follower{{ u.profile.followers.count|pluralize }}</p>
+                {% endif %}
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Articles Section -->
+        {% if posts %}
+        <div>
+          <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-5">Articles</h2>
+          <div class="space-y-4">
+            {% for post in posts|slice:":8" %}
+            <a href="{% url 'blog:detail' post.slug %}" class="flex gap-5 p-5 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all group">
+              {% if post.formatted_img_url %}
+                <img src="{{ post.formatted_img_url }}" class="w-28 h-20 object-cover rounded-xl flex-shrink-0" alt="{{ post.title }}">
+              {% else %}
+                <div class="w-28 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <span class="inline-block text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full mb-2">{{ post.category.name }}</span>
+                <h3 class="font-bold text-gray-900 text-base leading-snug group-hover:text-emerald-600 transition-colors line-clamp-2">{{ post.title }}</h3>
+                <p class="text-gray-400 text-xs mt-1.5 flex items-center gap-2">
+                  <span>by @{{ post.user.username }}</span>
+                  <span>·</span>
+                  <span>{{ post.created_at|date:"M j, Y" }}</span>
+                </p>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Topics Section -->
+        {% if categories %}
+        <div>
+          <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-5">Topics</h2>
+          <div class="flex flex-wrap gap-3">
+            {% for cat in categories %}
+            <a href="{% url 'blog:search' %}?q={{ cat.name }}" 
+               class="px-5 py-2.5 bg-white border border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 rounded-full transition-all shadow-sm">
+              # {{ cat.name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- ─── ARTICLES TAB ─── -->
+      <div id="section-articles" class="search-section hidden">
+        {% if posts %}
+        <div class="space-y-4">
+          {% for post in posts %}
+          <a href="{% url 'blog:detail' post.slug %}" class="flex gap-5 p-5 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all group">
+            {% if post.formatted_img_url %}
+              <img src="{{ post.formatted_img_url }}" class="w-28 h-20 object-cover rounded-xl flex-shrink-0" alt="{{ post.title }}">
+            {% else %}
+              <div class="w-28 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+              <span class="inline-block text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full mb-2">{{ post.category.name }}</span>
+              <h3 class="font-bold text-gray-900 text-base leading-snug group-hover:text-emerald-600 transition-colors line-clamp-2">{{ post.title }}</h3>
+              <p class="text-gray-400 text-xs mt-1.5">{{ post.content|truncatechars:120 }}</p>
+              <p class="text-gray-400 text-xs mt-2 flex items-center gap-2">
+                <span>by @{{ post.user.username }}</span>
+                <span>·</span>
+                <span>{{ post.created_at|date:"M j, Y" }}</span>
+                <span>·</span>
+                <span>{{ post.likes.count }} like{{ post.likes.count|pluralize }}</span>
+              </p>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 text-gray-400">No articles found for "{{ query }}"</div>
+        {% endif %}
+      </div>
+
+      <!-- ─── PEOPLE TAB ─── -->
+      <div id="section-people" class="search-section hidden">
+        {% if users %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {% for u in users %}
+          <a href="{% url 'blog:profile' u.username %}" class="flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all group">
+            {% if u.profile.formatted_profile_pic %}
+              <img src="{{ u.profile.formatted_profile_pic }}" class="w-14 h-14 rounded-full object-cover flex-shrink-0" alt="{{ u.username }}">
+            {% else %}
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white font-black text-xl flex-shrink-0">
+                {{ u.username|make_list|first|upper }}
+              </div>
+            {% endif %}
+            <div class="min-w-0">
+              <p class="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">@{{ u.username }}</p>
+              {% if u.first_name or u.last_name %}
+                <p class="text-gray-400 text-xs">{{ u.first_name }} {{ u.last_name }}</p>
+              {% endif %}
+              {% if u.profile.bio %}
+                <p class="text-gray-400 text-xs mt-1 line-clamp-2">{{ u.profile.bio }}</p>
+              {% endif %}
+              <p class="text-xs text-gray-400 mt-1 font-medium">{{ u.profile.followers.count }} follower{{ u.profile.followers.count|pluralize }}</p>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 text-gray-400">No users found for "{{ query }}"</div>
+        {% endif %}
+      </div>
+
+      <!-- ─── TOPICS TAB ─── -->
+      <div id="section-topics" class="search-section hidden">
+        {% if categories %}
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {% for cat in categories %}
+          <a href="{% url 'blog:search' %}?q={{ cat.name }}"
+             class="p-6 bg-white rounded-2xl border border-gray-100 hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-md transition-all text-center group">
+            <div class="w-12 h-12 bg-emerald-100 group-hover:bg-emerald-200 rounded-xl flex items-center justify-center mx-auto mb-3 transition-colors">
+              <span class="text-emerald-700 font-black text-lg">#</span>
+            </div>
+            <p class="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">{{ cat.name }}</p>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 text-gray-400">No topics found for "{{ query }}"</div>
+        {% endif %}
+      </div>
+
+      {% endif %}
+
+    {% else %}
+    <!-- NO QUERY: show popular topics -->
+    <div class="mt-4">
+      <h2 class="text-xs font-black uppercase tracking-[0.2em] text-gray-400 mb-5">Browse Topics</h2>
+      <div class="flex flex-wrap gap-3">
+        {% for cat in categories_all %}
+        <a href="{% url 'blog:search' %}?q={{ cat.name }}"
+           class="px-5 py-2.5 bg-white border border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 text-sm font-bold text-gray-700 hover:text-emerald-700 rounded-full transition-all shadow-sm">
+          # {{ cat.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  function showTab(tab) {
+    // Hide all sections
+    document.querySelectorAll('.search-section').forEach(s => s.classList.add('hidden'));
+    // Reset all tab styles
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('border-gray-900', 'text-gray-900');
+      btn.classList.add('border-transparent', 'text-gray-400');
+    });
+    // Show active section
+    document.getElementById('section-' + tab).classList.remove('hidden');
+    // Activate tab button
+    const activeBtn = document.getElementById('tab-' + tab);
+    activeBtn.classList.remove('border-transparent', 'text-gray-400');
+    activeBtn.classList.add('border-gray-900', 'text-gray-900');
+  }
+</script>
+{% endblock %}

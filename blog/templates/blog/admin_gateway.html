@@ -1,0 +1,51 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center bg-[#0a0a0a] -mx-4 -mt-8 sm:-mx-6 sm:-mt-8 lg:-mx-8 py-20 px-4 sm:px-6 lg:px-8 absolute inset-0 z-50">
+    <div class="max-w-md w-full space-y-8" data-aos="zoom-in" data-aos-duration="600">
+        <div class="text-center">
+            <svg class="mx-auto h-16 w-16 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <h2 class="mt-6 text-3xl font-display font-black text-white uppercase tracking-widest">Restricted Access</h2>
+            <p class="mt-2 text-sm text-gray-500 font-mono">AUTHORIZED PERSONNEL ONLY</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-4 rounded border {% if message.tags == 'error' %}bg-red-900/30 border-red-500 text-red-400{% else %}bg-emerald-900/30 border-emerald-500 text-emerald-400{% endif %} text-xs font-mono text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form class="mt-8 space-y-6" action="{% url 'blog:admin_gateway' %}" method="POST">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm space-y-4">
+                <div>
+                    <label for="secret_code" class="sr-only">Passcode</label>
+                    <input id="secret_code" name="secret_code" type="password" required class="appearance-none relative block w-full px-4 py-4 border border-gray-800 bg-gray-900 text-emerald-500 rounded-xl focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 text-center text-3xl font-mono tracking-[1em]" placeholder="&middot;&middot;&middot;&middot;&middot;&middot;" style="border: 1px solid #1f2937 !important;">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-4 border border-transparent text-sm font-bold rounded-xl text-black bg-emerald-500 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors uppercase tracking-widest">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-emerald-900 group-hover:text-emerald-800 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM8.293 11.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-2.293 2.293z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Initiate Handshake
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'blog:index' %}" class="text-xs text-gray-600 hover:text-gray-400 transition-colors font-mono">← Abort sequence</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Forcing absolute dark mode for this page */
+    body { background-color: #0a0a0a !important; overflow: hidden; }
+</style>
+{% endblock %}

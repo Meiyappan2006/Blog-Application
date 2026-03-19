@@ -1,0 +1,49 @@
+{% extends 'blog/base.html' %}
+{% block title %}Messages — SuperBlog{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto py-12 md:py-20 px-4">
+  <div class="mb-8 border-b border-gray-200 pb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-black text-gray-900 tracking-tight">Messages</h1>
+      {% if unread_total %}<p class="text-sm font-bold text-emerald-600 mt-1">{{ unread_total }} unread</p>{% endif %}
+    </div>
+  </div>
+
+  {% if conversations %}
+    <div class="space-y-2">
+      {% for convo in conversations %}
+      <a href="{% url 'blog:conversation' username=convo.user.username %}"
+         class="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all group">
+        <!-- Avatar -->
+        <div class="relative flex-shrink-0">
+          <img src="{{ convo.user.profile.formatted_profile_pic }}" class="w-14 h-14 rounded-full object-cover" alt="{{ convo.user.username }}">
+          {% if convo.unread %}<span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></span>{% endif %}
+        </div>
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between mb-0.5">
+            <span class="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">@{{ convo.user.username }}</span>
+            <span class="text-xs text-gray-400">{{ convo.last_msg.created_at|timesince }} ago</span>
+          </div>
+          <p class="text-sm text-gray-500 truncate {% if convo.unread %}font-bold text-gray-900{% endif %}">
+            {% if convo.last_msg.sender == request.user %}You: {% endif %}{{ convo.last_msg.content }}
+          </p>
+        </div>
+        {% if convo.unread %}
+          <span class="flex-shrink-0 bg-emerald-500 text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">{{ convo.unread }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-24">
+      <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+        <svg class="w-9 h-9 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      </div>
+      <h3 class="text-xl font-black text-gray-800 mb-2">No messages yet</h3>
+      <p class="text-gray-500 text-sm">Visit someone's profile and start a conversation!</p>
+      <a href="{% url 'blog:search' %}" class="inline-block mt-5 px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-full hover:bg-black transition-all">Find People</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

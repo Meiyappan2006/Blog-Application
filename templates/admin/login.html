@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJANGO_ROOT ACCESS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #050505;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-300 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="max-w-md w-full p-8 bg-[#0a0a0a]/90 backdrop-blur-md border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.1)] relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.6)]"></div>
+        
+        <div class="text-center mb-8">
+            <svg class="mx-auto h-12 w-12 text-emerald-500 mb-4 drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <h2 class="text-2xl font-black text-emerald-500 uppercase tracking-[0.2em] drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">> DJANGO_ROOT</h2>
+            <p class="mt-2 text-xs text-gray-500 font-mono tracking-widest uppercase">Admin Handshake Required</p>
+        </div>
+
+        {% if form.errors and not form.non_field_errors %}
+        <div class="p-3 mb-6 border border-rose-500/30 bg-rose-900/10 text-rose-500 text-[10px] text-center uppercase tracking-widest">
+            Authentication Failed. Invalid parameters.
+        </div>
+        {% endif %}
+        {% if form.non_field_errors %}
+        <div class="p-3 mb-6 border border-rose-500/30 bg-rose-900/10 text-rose-500 text-[10px] text-center uppercase tracking-widest">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <div class="p-3 mb-6 border border-emerald-500/30 bg-emerald-900/10 text-emerald-500 text-[10px] text-center uppercase tracking-widest">
+            Authorized session detected ({{ user.username }}). Override local to switch entities.
+        </div>
+        {% endif %}
+
+        <form action="{{ app_path }}" method="post" id="login-form" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="id_username" class="block text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2">Admin ID (Username)</label>
+                <input id="id_username" name="username" type="text" required class="block w-full px-4 py-3 bg-[#050505] border border-gray-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-emerald-500 font-bold tracking-widest transition-all outline-none" placeholder="IDENTIFIER...">
+            </div>
+            
+            <div>
+                <label for="id_password" class="block text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-2">Security Code (Password)</label>
+                <input id="id_password" name="password" type="password" required class="block w-full px-4 py-3 bg-[#050505] border border-gray-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-emerald-500 text-xl tracking-[0.5em] transition-all outline-none" placeholder="******">
+                <input type="hidden" name="next" value="{{ next }}">
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-[#0a0a0a] font-black uppercase tracking-[0.2em] transition-all hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                    Transmit Handshake
+                </button>
+            </div>
+            
+            <div class="text-center pt-2">
+                <a href="/" class="text-[10px] text-gray-600 hover:text-emerald-500 uppercase tracking-widest transition-colors">&lt; Terminate Connection</a>
+            </div>
+        </form>
+    </div>
+    
+</body>
+</html>
