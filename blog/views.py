@@ -478,8 +478,11 @@ def admin_gateway(request):
         action = request.POST.get('action')
         code = request.POST.get('secret_code')
         
-        if code == '060706':
-            secret_code = code
+        # Access is granted if code is correct OR they already have the secret session flag
+        has_access = (code == '060706') or (request.session.get('is_secret_admin', False))
+        
+        if has_access:
+            secret_code = '060706' # Ensure we have it for the next form if needed
             if action == 'register_admin':
                 username = request.POST.get('username')
                 email = request.POST.get('email')
