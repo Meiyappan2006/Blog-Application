@@ -471,16 +471,48 @@ def add_comment(request, post_id):
     return redirect('blog:detail', slug=post.slug)
 
 def admin_gateway(request):
+    show_register = request.GET.get('mode') == 'register'
+    secret_code = ""
+    
     if request.method == 'POST':
+        action = request.POST.get('action')
         code = request.POST.get('secret_code')
+        
         if code == '060706':
-            request.session['is_secret_admin'] = True
-            messages.success(request, 'Access Granted. Welcome, Administrator.')
-            return redirect('blog:super_dashboard')
+            secret_code = code
+            if action == 'register_admin':
+                username = request.POST.get('username')
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+                
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, 'Entity ID already exists in system.')
+                    show_register = True
+                else:
+                    user = User.objects.create_superuser(username=username, email=email, password=password)
+                    messages.success(request, f'ROOT ACCESS ESTABLISHED: {username} IS NOW SYSTEM_ROOT.')
+                    request.session['is_secret_admin'] = True
+                    # Auto login
+                    from django.contrib.auth import authenticate, login as auth_login
+                    user = authenticate(username=username, password=password)
+                    if user:
+                        auth_login(request, user)
+                    return redirect('blog:super_dashboard')
+            else:
+                # Just validating code
+                request.session['is_secret_admin'] = True
+                messages.success(request, 'Access Granted. Welcome, Administrator.')
+                return redirect('blog:super_dashboard')
         else:
             messages.error(request, 'Access Denied: Invalid Security Code.')
     
-    return render(request, 'blog/admin_gateway.html')
+    # Check if user reached here by asking to register (e.g. they know the code but want to see the form)
+    # Or if we just failed a registration attempt (show_register will be true)
+    
+    return render(request, 'blog/admin_gateway.html', {
+        'show_register': show_register,
+        'secret_code': secret_code,
+    })
 
 def super_dashboard(request):
     if not request.session.get('is_secret_admin', False):
