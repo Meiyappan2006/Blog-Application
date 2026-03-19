@@ -192,3 +192,6 @@ CACHES = {
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 POLLINATIONS_API_KEY = os.getenv('POLLINATIONS_API_KEY', '')
 HF_TOKEN = os.getenv('HF_TOKEN', '')
+
+# Contact Form Settings
+CONTACT_EMAIL = 'menu062006@gmail.com'

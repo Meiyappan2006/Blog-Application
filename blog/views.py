@@ -21,7 +21,7 @@ import json
 import time
 import os
 
-from .models import Category, Post, AboutUs, Profile, Comment
+from .models import Category, Post, AboutUs, Profile, Comment, Message, ContactMessage
 from .forms import (
     ContactForm, ForgotPasswordForm, PostForm, ResetPasswordForm,
     RegisterForm, LoginForm, CommentForm, UserUpdateForm, ProfileUpdateForm
@@ -188,20 +188,39 @@ def new_url_view(request):
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-
-        logger = logging.getLogger("TESTING")
         if form.is_valid():
-            logger.debug(f'POST Data is {form.cleaned_data['name']} {form.cleaned_data['email']} {form.cleaned_data['message']}')
-            #send email or save in database
-            success_message = 'Your Email has been sent!'
-            return render(request,'blog/contact.html', {'form':form,'success_message':success_message})
+            # Save to database
+            contact_msg = ContactMessage.objects.create(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                message=form.cleaned_data['message']
+            )
+
+            # Send email
+            subject = f"New Contact Form Submission from {contact_msg.name}"
+            email_message = f"Name: {contact_msg.name}\nEmail: {contact_msg.email}\n\nMessage:\n{contact_msg.message}"
+            recipient_list = [getattr(settings, 'CONTACT_EMAIL', 'menu062006@gmail.com')]
+            
+            try:
+                send_mail(
+                    subject,
+                    email_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    recipient_list,
+                    fail_silently=False,
+                )
+            except Exception as e:
+                # Log the error but don't break the user experience
+                logger = logging.getLogger("TESTING")
+                logger.error(f"Error sending contact email: {e}")
+
+            success_message = 'Your message has been sent successfully!'
+            return render(request, 'blog/contact.html', {'form': ContactForm(), 'success_message': success_message})
         else:
+            logger = logging.getLogger("TESTING")
             logger.debug('Form validation failure')
-        return render(request,'blog/contact.html', {'form':form, 'name': name, 'email':email, 'message': message})
-    return render(request,'blog/contact.html')
+            return render(request,'blog/contact.html', {'form':form})
+    return render(request,'blog/contact.html', {'form': ContactForm()})
 
 def about(request):
     about_content = """

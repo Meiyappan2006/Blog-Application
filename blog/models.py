@@ -84,3 +84,13 @@ class Message(models.Model):
 
     def __str__(self):
         return f'From {self.sender.username} to {self.receiver.username}: {self.content[:40]}'
+
+class ContactMessage(models.Model):
+    """Message from the contact form."""
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message from {self.name} ({self.email})"
