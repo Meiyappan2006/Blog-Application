@@ -635,11 +635,13 @@ def search(request):
         categories = Category.objects.filter(name__icontains=query)
 
     total_results = posts.count() + users.count()
+    categories_all = Category.objects.all().order_by('name')
     
     return render(request, 'blog/search.html', {
         'query': query,
         'posts': posts,
         'users': users,
         'categories': categories,
+        'categories_all': categories_all,
         'total_results': total_results,
     })
