@@ -1,10 +1,14 @@
+{% load static %}
 <header class="bg-white w-full fixed top-0 z-50 border-b border-gray-200 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
-                <a href="/" class="text-3xl font-display font-black tracking-tight text-gray-900 hover:text-gray-600 transition-colors" data-aos="fade-down">
-                    SuperBlog.
+                <a href="/" class="flex items-center space-x-3 group" data-aos="fade-down">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 transform group-hover:-rotate-3 text-white flex items-center justify-center">
+                        <img src="{% static 'logo.png' %}" alt="Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-2xl font-display font-black tracking-tight text-gray-900 group-hover:text-gray-600 transition-colors">SuperBlog.</span>
                 </a>
             </div>
 
