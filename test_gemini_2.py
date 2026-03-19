@@ -1,7 +1,7 @@
 import urllib.request
 import json
-api_key = "AIzaSyCcZZW0ju4mzC-eHnwQ2-X_ilnDZHHTBAE"
-url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
+api_key = "AIzaSyAveARsqU7eR4l_QWGH4ipPcAop9MB6aiQ"
+url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
 payload = {
     "contents": [{"parts": [{"text": "Write a short poem about a cat."}]}]
 }

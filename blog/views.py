@@ -579,8 +579,7 @@ def generate_story(request):
             import urllib.request
             
             # We'll try a sequence of models to find one with available quota
-            # Standard model names for Google AI Studio / Generative Language API
-            models = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-2.0-flash-exp"]
+            models = ["gemini-flash-latest", "gemini-1.5-flash-8b", "gemini-2.0-flash"]
             last_error = "Unknown Error"
             
             for model_name in models:
