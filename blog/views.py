@@ -1,33 +1,31 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404, JsonResponse
 from django.urls import reverse
-import logging
-
-from .models import Category, Post, AboutUs
-from django.http import Http404
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator
-from .forms import ContactForm, ForgotPasswordForm, PostForm, ResetPasswordForm 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes 
+from django.conf import settings
+
+import logging
 import urllib.error
 import urllib.request
 import json
 import time
-# accounts/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib import messages
-from .forms import RegisterForm, LoginForm, PostForm, CommentForm, UserUpdateForm, ProfileUpdateForm
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from .models import Post, Category, AboutUs, Profile, Comment
+import os
 
-from blog import forms
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes 
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Group
+from .models import Category, Post, AboutUs, Profile, Comment
+from .forms import (
+    ContactForm, ForgotPasswordForm, PostForm, ResetPasswordForm,
+    RegisterForm, LoginForm, CommentForm, UserUpdateForm, ProfileUpdateForm
+)
 # Create your views here.
 
 # static demo data
